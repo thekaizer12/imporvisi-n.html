@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Carrito con Cálculo de Importación - IMPORVISIÓN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6680cc 0%, #a76be2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ffffff 0%, #acacac 100%);
+            color: rgb(0, 0, 0);
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Sistema de Pestañas */
+        .tabs-container {
+            background: #52d493;
+            border-bottom: 3px solid #e0e0e0;
+        }
+
+        .tabs-nav {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px 30px;
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #000000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-button:hover {
+            background: rgba(128, 98, 209, 0.342);
+            color: #6868b6;
+        }
+
+        .tab-button.active {
+            background: rgb(133, 111, 233);
+            color: #000000;
+            border-bottom: 3px solid #000000;
+        }
+
+        .tab-badge {
+            background: #f80303;
+            color: rgb(255, 255, 255);
+            border-radius: 50%;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Estilos de la pestaña Inicio */
+        .home-content {
+            line-height: 1.8;
+            color: #333;
+        }
+        .home-content h2 {
+            color: #6681d4;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .home-content h3 {
+            color: #5a67d8;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        .home-content p {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .home-content ul {
+            list-style: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .home-content .contact-info {
+            background-color: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        .home-content .company-logo {
+            max-width: 200px; /* Ajusta según el tamaño de tu logo */
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+
+
+        /* Estilos del Catálogo */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        #search-input { /* Specific styling for search input */
+            flex-grow: 1;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        #search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .product-image-container {
+            width: auto;
+            height: 200px;
+            overflow: hidden;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image {
+            width: auto;
+            height: 200px;
+            object-fit: cover; 
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-specs {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            background: #f0f4ff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-to-cart-btn:disabled {
+            background: #48bb78; 
+            cursor: default;
+            transform: none;
+        }
+
+        /* Carrito */
+        .cart-content {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 30px;
+        }
+
+        .cart-items-section, .cart-summary-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .cart-summary-section {
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .section-title { 
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem; 
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .item-specs {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .quantity-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.1);
+        }
+
+        .quantity {
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c53030;
+            transform: scale(1.05);
+        }
+
+        /* Cálculos de Importación */
+        .import-calculations {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .import-calculations h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calculation-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-item h4 {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .summary-item .value {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .shipping-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .shipping-option {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .shipping-option:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .shipping-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .shipping-option h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shipping-cost {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .shipping-details {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .cost-breakdown {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .cost-breakdown h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .cost-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+
+        .cost-line.total {
+            border-top: 2px solid #667eea;
+            margin-top: 15px;
+            padding-top: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .optimization-tip {
+            background: #e8f5e8;
+            border: 1px solid #48bb78;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .optimization-tip h4 {
+            color: #2d5a2d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .optimization-tip p {
+            color: #2d5a2d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .empty-cart h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .continue-shopping {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .continue-shopping:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .admin-toggle {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .admin-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .admin-toggle.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .admin-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: none;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .admin-controls.show {
+            display: flex;
+        }
+
+        .admin-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .edit-btn {
+            background: #9c9cec;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .admin-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .add-product-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .add-product-btn.show {
+            display: block;
+        }
+
+        .add-product-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-input, .form-select, .form-textarea { 
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-upload-section {
+            border: 2px dashed #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .image-upload-section:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .image-upload-section.dragover {
+            border-color: #667eea;
+            background: #e8f2ff;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin: 10px auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .upload-text {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: #5a67d8;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .shipping-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .calculation-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-nav {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .tab-button.active {
+                border-bottom: 3px solid #667eea;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quantity-controls {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+<div>
+    <h1>
+        <img src="https://i.postimg.cc/Vkc3gsd2/logo-imporvision-Editado.png" alt="IMPORVISIÓN Logo" width="50">
+        IMPORVISIÓN
+    </h1>
+    <p>Tu aliado para importar desde China a Venezuela</p>
+</div>
+
+            <button class="admin-toggle" id="admin-toggle" onclick="toggleAdminMode()">
+                🔧 Modo Admin
+            </button>
+        </header>
+
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                 <button class="tab-button active" onclick="switchTab('home', event)"> 
+                    🏠 Inicio
+                </button>
+                <button class="tab-button" onclick="switchTab('catalog', event)">
+                    📦 Catálogo de Productos
+                </button>
+                <button class="tab-button" onclick="switchTab('cart', event)">
+                    🛍️ Mi Carrito
+                    <span class="tab-badge" id="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="home-tab" class="tab-content active"> 
+            <div class="home-content">
+                <!-- Puedes agregar un logo aquí si tienes uno. Ejemplo:
+                <img src="path/to/your/logo.png" alt="Logo IMPORVISIÓN" class="company-logo">
+                -->
+                <h2>Bienvenido a IMPORVISIÓN</h2>
+                <p>En <strong>IMPORVISIÓN</strong>, convertimos tus ideas de importación en realidad. Somos especialistas en conectar a emprendedores y empresas venezolanas con el vasto mercado de China, facilitando la adquisición de productos de manera eficiente, transparente y segura.</p>
+                
+                <h3>Nuestra Visión</h3>
+                <p>Ser el puente de confianza para el comercio entre China y Venezuela, impulsando el crecimiento de nuestros clientes a través de soluciones de importación innovadoras y personalizadas. Queremos que importar sea una experiencia sencilla y rentable para ti.</p>
+                
+                <h3>¿Qué Hacemos por Ti?</h3>
+                <ul>
+                    <li><strong>Asesoría Personalizada:</strong> Te guiamos en cada paso, desde la selección de productos hasta la entrega final.</li>
+                    <li><strong>Búsqueda Estratégica de Proveedores:</strong> Encontramos fabricantes y mayoristas confiables que se ajusten a tus necesidades y presupuesto.</li>
+                    <li><strong>Cálculos Claros y Precisos:</strong> Utiliza nuestra herramienta en línea para estimar los costos de tus importaciones, incluyendo envío y otros gastos asociados.</li>
+                    <li><strong>Logística Integral:</strong> Coordinamos el transporte aéreo o marítimo, la consolidación de tu carga y los trámites aduaneros.</li>
+                    <li><strong>Calidad y Confianza:</strong> Nos aseguramos de que tus productos cumplan con los estándares esperados.</li>
+                </ul>
+
+                <h3>¿Por Qué IMPORVISIÓN?</h3>
+                <p>
+                    <strong>Experiencia Comprobada:</strong> Conocemos los desafíos y oportunidades del comercio internacional.
+                    <br>
+                    <strong>Red de Contactos:</strong> Contamos con una sólida red en China para asegurar las mejores condiciones.
+                    <br>
+                    <strong>Compromiso:</strong> Tu éxito es nuestro principal objetivo. Nos dedicamos a ofrecerte un servicio que supere tus expectativas.
+                </p>
+                
+                <h3>Encuéntranos</h3>
+                <p>Nuestras oficinas están ubicadas en el corazón de la actividad comercial:</p>
+                <address>
+                    Avenida Francisco de Miranda<br>
+                    Edificio Principal, Oficina 10A<br>
+                    Chacao, Caracas<br>
+                    Venezuela
+                </address>
+                <p>También operamos con un centro logístico clave en Guangzhou, China, para optimizar tus envíos.</p>
+
+                <div class="contact-info">
+                    <h3>¡Hablemos de tu Proyecto!</h3>
+                    <p>
+                        <strong>Teléfono Caracas:</strong> +58 212-123-4567<br>
+                        <strong>WhatsApp:</strong> +58 412-987-6543<br>
+                        <strong>Email:</strong> contacto@imporvision.com.ve<br>
+                        <strong>Horario de Atención:</strong> Lunes a Viernes, 9:00 AM - 6:00 PM (VEN)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="catalog-tab" class="tab-content">
+            <h2 class="section-title">📦 Productos Disponibles</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="🔍 Buscar productos por nombre...">
+            </div>
+            <button class="add-product-btn" id="add-product-btn" onclick="openProductModal()">
+                ➕ Agregar Producto
+            </button>
+            <div class="products-grid" id="products-grid">
+                <!-- Los productos se cargarán aquí con JavaScript -->
+            </div>
+        </div>
+
+        <div id="cart-tab" class="tab-content">
+            <div class="cart-content">
+                <section class="cart-items-section">
+                    <h2 class="section-title">🛍️ Productos en tu Carrito</h2>
+                    <div id="cart-items">
+                        <div class="empty-cart">
+                            <h3>Tu carrito está vacío</h3>
+                            <p>¡Agrega algunos productos desde el catálogo!</p>
+                            <button class="continue-shopping" onclick="switchTab('catalog', event)">
+                                Ir al Catálogo
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cart-summary-section">
+                    <h2 class="section-title">📊 Resumen de Compra</h2> 
+                    
+                    <div class="import-calculations" id="import-calculations">
+                        <h3>🚢 Resumen de Carga</h3>
+                        <div class="calculation-summary">
+                            <div class="summary-item">
+                                <h4>Peso Total</h4>
+                                <div class="value" id="total-weight">0 kg</div>
+                            </div>
+                            <div class="summary-item">
+                                <h4>Volumen Total</h4>
+                                <div class="value" id="total-volume">0 m³</div>
+                            </div>
+                            <div class="summary-item">
+                                <h4>Peso Volumétrico</h4>
+                                <div class="value" id="volumetric-weight">0 kg</div>
+                            </div>
+                            <div class="summary-item">
+                                <h4>Peso Facturable (Aéreo)</h4>
+                                <div class="value" id="chargeable-weight">0 kg</div>
+                            </div>
+                        </div>
+
+                        <h4 style="margin-bottom: 15px; color: #333;">🚚 Comparación de Envío</h4>
+                        <div class="shipping-comparison">
+                            <div class="shipping-option" id="air-option" onclick="selectShipping('air')">
+                                <h4>✈️ Envío Aéreo</h4>
+                                <div class="shipping-cost" id="air-cost">$0</div>
+                                <div class="shipping-details">
+                                    <strong>Fórmula:</strong> $12 base + $7/kg (facturable)<br>
+                                    <strong>Tiempo:</strong> 5-7 días<br>
+                                    <strong>Cálculo:</strong> <span id="air-calculation">-</span>
+                                </div>
+                            </div>
+                            <div class="shipping-option selected" id="sea-option" onclick="selectShipping('sea')">
+                                <h4>🚢 Envío Marítimo</h4>
+                                <div class="shipping-cost" id="sea-cost">$0</div>
+                                <div class="shipping-details">
+                                    <!-- This will be populated by JS -->
+                                    <strong>Tiempo:</strong> 25-35 días<br>
+                                    <strong>Cálculo:</strong> <span id="sea-calculation">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="optimization-tip" class="optimization-tip" style="display: none;">
+                            <h4>💡 Optimización de Embalaje</h4>
+                            <p id="optimization-text"></p>
+                        </div>
+                    </div>
+
+                    <div class="cost-breakdown" id="cost-breakdown" style="display: none;">
+                        <h3>💰 Desglose de Costos</h3>
+                        <div class="cost-line">
+                            <span>Costo de Productos (FOB):</span>
+                            <span>$<span id="products-subtotal">0</span></span>
+                        </div>
+                        <div class="cost-line">
+                            <span>Costo de Envío:</span>
+                            <span>$<span id="shipping-cost">0</span></span>
+                        </div>
+                         <div class="cost-line">
+                            <span>Peso Total de la Carga:</span>
+                            <span><span id="breakdown-total-weight">0</span> kg</span>
+                        </div>
+                        <div class="cost-line total">
+                            <span>TOTAL (Productos + Envío):</span>
+                            <span>$<span id="final-total">0</span></span>
+                        </div>
+                    </div>
+
+                    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>
+                        💳 Proceder al Pago
+                    </button>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <!-- Modal para Agregar/Editar Productos -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Agregar Nuevo Producto</h3>
+                <button class="close-btn" onclick="closeProductModal()">×</button>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label class="form-label">Imagen del Producto</label>
+                    <div class="image-upload-section" id="image-upload-section">
+                        <img id="image-preview" class="image-preview" style="display: none;">
+                        <div id="upload-placeholder">
+                            <div class="upload-text">📸 Arrastra una imagen aquí o haz click para seleccionar</div>
+                            <button type="button" class="upload-btn" onclick="document.getElementById('image-input').click()">
+                                Seleccionar Imagen
+                            </button>
+                        </div>
+                        <input type="file" id="image-input" class="file-input" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="product-name">Nombre del Producto</label>
+                    <input type="text" id="product-name" class="form-input" placeholder="Ej: Laptop Gaming" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="product-price">Precio (USD)</label>
+                        <input type="number" id="product-price" class="form-input" placeholder="99.99" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="product-category">Categoría</label>
+                        <select id="product-category" class="form-select" required>
+                            <option value="">Seleccionar categoría</option>
+                            <option value="electronics">Electrónicos</option>
+                            <option value="clothing">Ropa</option>
+                            <option value="books">Libros</option>
+                            <option value="home">Hogar</option>
+                            <option value="sports">Deportes</option>
+                            <option value="tools">Herramientas</option>
+                            <option value="toys">Juguetes</option>
+                            <option value="cosmetics">Cosméticos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="product-weight">Peso (kg)</label>
+                        <input type="number" id="product-weight" class="form-input" placeholder="0.5" step="0.001" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="product-volume">Volumen (m³)</label>
+                        <input type="number" id="product-volume" class="form-input" placeholder="0.001" step="0.0001" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar Producto</button>
+                    <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const initialProducts = [
+            {
+                id: 1, name: "redmi 15 pro max", price: 120.00, image: "https://www.pricepony.com.ph/blog/wp-content/uploads/2024/02/13PROMAX-1.png", weight: 0.300, volume: 0.000093, category: "electronics"
+            },
+            {
+                id: 2, name: "Auriculares Bluetooth TWS", price: 12.50, image: "https://i.pinimg.com/736x/80/c0/e9/80c0e9e780e68ced6dd6c91270ae5a0e.jpg", weight: 0.100, volume:  0.000068, category: "electronics"
+            },
+            {
+                id: 3, name: "RELOJ INTELIGENTE", price: 8.00, image: "https://i.pinimg.com/736x/2c/4e/57/2c4e57d55aa2a9bdbdde3a60757c843a.jpg", weight: 0.100, volume: 0.000240, category: "electronics"
+            },
+            {
+                id: 4, name: "Power Bank 30000mAh", price: 10.80, image: "https://i.pinimg.com/736x/01/2e/b0/012eb02a80e74f5377e00fb2629b9080.jpg", weight: 0.250, volume: 0.000294, category: "electronics"
+            },
+            {
+                id: 5, name: "Tablet 10.1\" 64GB", price: 95.00, image: "https://www.btnet.com.tr/wp-content/uploads/2023/08/samsung-galaxy-tab-s9-ozellikleri-ve-fiyati.jpg", weight: 0.520, volume: 0.000375, category: "electronics"
+            },
+            {
+                id: 6, name: "Cámara de Seguridad WiFi", price: 22.00, image: "https://static.kemikcdn.com/2021/08/CCTV-235-Steren-1200x1200-NO-8-1.jpg", weight: 0.350, volume: 0.000867, category: "electronics"
+            },
+            {
+                id: 7, name: "Teclado Mecánico RGB", price: 12.00, image: "https://images.tcdn.com.br/img/img_prod/1145744/teclado_mecanico_gamer_tt_challenger_edge_pro_rgb_plunger_kb_cpr_plbrpb_01_21087_1_0f7e613a17ce9a2b6c13c758b0ed0b6e.jpg", weight: 0.650, volume: 0.002025, category: "electronics"
+            },
+            {
+                id: 8, name: "Mouse Gaming Inalámbrico", price: 10.50, image: "https://www.tunisianet.com.tn/164299-large/souris-gaming-redragon-sniper-m801.jpg", weight: 0.150, volume: 0.000336, category: "electronics"
+            }
+        ];
+
+        let products = [...initialProducts];
+        let cart = [];
+        let currentTab = 'home'; 
+        let selectedShippingMethod = 'sea';
+        let adminMode = false;
+        let editingProductId = null;
+        let currentImageData = null;
+
+        const VOLUMETRIC_FACTOR = 167;
+        const AIR_BASE_COST = 12;
+        const AIR_PER_KG_RATE = 7;
+        const SEA_CBM_RATE = 60;
+        const SEA_SUB_CBM_VOLUMETRIC_KG_RATE = 10;
+        const SEA_CBM_THRESHOLD = 1;
+
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            const adminToggle = document.getElementById('admin-toggle');
+            const addProductBtn = document.getElementById('add-product-btn');
+            
+            if (adminMode) {
+                adminToggle.textContent = '🔒 Salir Admin';
+                adminToggle.classList.add('active');
+                addProductBtn.classList.add('show');
+            } else {
+                adminToggle.textContent = '🔧 Modo Admin';
+                adminToggle.classList.remove('active');
+                addProductBtn.classList.remove('show');
+            }
+            if (currentTab === 'catalog') renderProductsBasedOnSearch();
+        }
+
+        function setupImageUpload() {
+            const imageInput = document.getElementById('image-input');
+            const imageUploadSection = document.getElementById('image-upload-section');
+            const imagePreview = document.getElementById('image-preview');
+            const uploadPlaceholder = document.getElementById('upload-placeholder');
+
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) handleImageFile(file);
+            });
+
+            ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+                imageUploadSection.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            imageUploadSection.addEventListener('dragenter', () => imageUploadSection.classList.add('dragover'));
+            imageUploadSection.addEventListener('dragleave', () => imageUploadSection.classList.remove('dragover'));
+            
+            imageUploadSection.addEventListener('drop', function(e) {
+                imageUploadSection.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    handleImageFile(files[0]);
+                }
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            function handleImageFile(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentImageData = e.target.result;
+                    imagePreview.src = currentImageData;
+                    imagePreview.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function openProductModal(productId = null) {
+            const modal = document.getElementById('product-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const form = document.getElementById('product-form');
+            const imagePreview = document.getElementById('image-preview');
+            const uploadPlaceholder = document.getElementById('upload-placeholder');
+            
+            editingProductId = productId;
+            currentImageData = null;
+            form.reset();
+            imagePreview.style.display = 'none';
+            uploadPlaceholder.style.display = 'block';
+            imagePreview.src = '';
+
+
+            if (productId) {
+                const product = products.find(p => p.id === productId);
+                if (!product) return;
+                modalTitle.textContent = 'Editar Producto';
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-weight').value = product.weight;
+                document.getElementById('product-volume').value = product.volume;
+                document.getElementById('product-category').value = product.category;
+                
+                if (product.image) {
+                    currentImageData = product.image;
+                    imagePreview.src = product.image;
+                    imagePreview.style.display = 'block';
+                    uploadPlaceholder.style.display = 'none';
+                }
+            } else {
+                modalTitle.textContent = 'Agregar Nuevo Producto';
+            }
+            modal.classList.add('show');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.remove('show');
+            editingProductId = null;
+            currentImageData = null;
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+                const productIndex = products.findIndex(p => p.id === productId);
+                if (productIndex > -1) {
+                    products.splice(productIndex, 1);
+                }
+                cart = cart.filter(item => item.id !== productId);
+                if (currentTab === 'catalog') renderProductsBasedOnSearch();
+                updateCartBadge();
+                if (currentTab === 'cart') updateCart();
+                showNotification('Producto eliminado correctamente');
+            }
+        }
+
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            
+            const tabElement = document.getElementById(tabName + '-tab');
+            if (tabElement) tabElement.classList.add('active');
+            
+            if (event && event.currentTarget) {
+                 event.currentTarget.classList.add('active');
+            } else { 
+                const targetButton = document.querySelector(`.tabs-nav .tab-button[onclick*="'${tabName}'"]`);
+                if (targetButton) targetButton.classList.add('active');
+            }
+            
+            currentTab = tabName;
+            if (tabName === 'cart') {
+                updateCart();
+            } else if (tabName === 'catalog') {
+                renderProductsBasedOnSearch();
+            }
+        }
+        
+        function renderProductsBasedOnSearch() {
+            const searchInput = document.getElementById('search-input');
+            let productsToDisplay = products;
+            if (searchInput && searchInput.value.trim() !== '') {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                productsToDisplay = products.filter(product =>
+                    product.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            renderProducts(productsToDisplay);
+        }
+
+
+        function renderProducts(productsToDisplay = products) {
+            const productsGrid = document.getElementById('products-grid');
+             if (!productsGrid) return; // Exit if not on catalog tab or element doesn't exist
+
+            const searchInput = document.getElementById('search-input');
+
+            if (productsToDisplay.length === 0) {
+                if (searchInput && searchInput.value.trim() !== '') {
+                     productsGrid.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; grid-column: 1 / -1;">No se encontraron productos que coincidan con "${searchInput.value}".</p>`;
+                } else if (initialProducts.length > 0 && products.length === 0 && adminMode){
+                     productsGrid.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; grid-column: 1 / -1;">Todos los productos han sido eliminados. Agrega nuevos productos.</p>`;
+                }
+                else {
+                     productsGrid.innerHTML = `<p style="text-align:center; color:#666; font-style:italic; grid-column: 1 / -1;">No hay productos disponibles en este momento.</p>`;
+                }
+                return;
+            }
+            
+            productsGrid.innerHTML = productsToDisplay.map(product => {
+                const inCartItem = cart.find(item => item.id === product.id);
+                const buttonText = inCartItem ? `✓ En Carrito (${inCartItem.quantity})` : 'Agregar al Carrito';
+                const buttonDisabled = inCartItem ? 'disabled' : '';
+                
+                return `
+                    <div class="product-card">
+                        <div class="admin-controls ${adminMode ? 'show' : ''}">
+                            <button class="admin-btn edit-btn" onclick="openProductModal(${product.id})" title="Editar">✏️</button>
+                            <button class="admin-btn delete-btn" onclick="deleteProduct(${product.id})" title="Eliminar">🗑️</button>
+                        </div>
+                        <div class="product-image-container">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">$${product.price.toFixed(2)}</div>
+                            <div class="product-specs">
+                                📦 Peso: ${product.weight.toFixed(3)} kg<br>
+                                📏 Volumen: ${(product.volume * 1000).toFixed(1)} L (${product.volume.toFixed(6)} m³)<br>
+                                🏷️ Categoría: ${product.category}
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addToCart(${product.id})" ${buttonDisabled}>
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartBadge();
+            if (currentTab === 'catalog') renderProductsBasedOnSearch();
+            if (currentTab === 'cart') updateCart();
+            showNotification(`${product.name} agregado al carrito`);
+        }
+
+        function updateCartBadge() {
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-badge').textContent = itemCount;
+        }
+
+        function selectShipping(method) {
+            selectedShippingMethod = method;
+            document.querySelectorAll('.shipping-option').forEach(opt => opt.classList.remove('selected'));
+            document.getElementById(method + '-option').classList.add('selected');
+            updateCosts();
+        }
+
+        function updateCosts() {
+            const totalWeight = cart.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
+            const totalVolume = cart.reduce((sum, item) => sum + (item.volume * item.quantity), 0);
+            const productsSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const seaDetailsEl = document.querySelector('#sea-option .shipping-details');
+            const breakdownTotalWeightEl = document.getElementById('breakdown-total-weight');
+
+            if (cart.length === 0) {
+                document.getElementById('total-weight').textContent = '0 kg';
+                document.getElementById('total-volume').textContent = '0 m³';
+                document.getElementById('volumetric-weight').textContent = '0 kg';
+                document.getElementById('chargeable-weight').textContent = '0 kg';
+                document.getElementById('air-cost').textContent = '$0.00';
+                document.getElementById('sea-cost').textContent = '$0.00';
+                document.getElementById('air-calculation').textContent = '-';
+                
+                if (seaDetailsEl) {
+                     seaDetailsEl.innerHTML = `<strong>Fórmula:</strong> $${SEA_CBM_RATE}/m³ (si ≥ ${SEA_CBM_THRESHOLD}m³),<br>o $${SEA_SUB_CBM_VOLUMETRIC_KG_RATE}/kg-vol (si < ${SEA_CBM_THRESHOLD}m³)<br><strong>Tiempo:</strong> 25-35 días<br><strong>Cálculo:</strong> <span id="sea-calculation">-</span>`;
+                }
+
+                document.getElementById('products-subtotal').textContent = '0.00';
+                document.getElementById('shipping-cost').textContent = '0.00';
+                if (breakdownTotalWeightEl) breakdownTotalWeightEl.textContent = '0.00';
+                document.getElementById('final-total').textContent = '0.00';
+                document.getElementById('optimization-tip').style.display = 'none';
+                return;
+            }
+
+            const volumetricWeightCalculated = totalVolume * VOLUMETRIC_FACTOR;
+            const chargeableWeightAir = Math.max(totalWeight, volumetricWeightCalculated);
+            const airCost = AIR_BASE_COST + (chargeableWeightAir * AIR_PER_KG_RATE);
+            const airCalculationText = `$${AIR_BASE_COST} + (${chargeableWeightAir.toFixed(2)}kg × $${AIR_PER_KG_RATE})`;
+
+            let seaCost;
+            let seaCalculationText;
+            if (totalVolume < SEA_CBM_THRESHOLD) {
+                seaCost = volumetricWeightCalculated * SEA_SUB_CBM_VOLUMETRIC_KG_RATE;
+                seaCalculationText = `${volumetricWeightCalculated.toFixed(2)}kg (vol) × $${SEA_SUB_CBM_VOLUMETRIC_KG_RATE}`;
+            } else {
+                seaCost = totalVolume * SEA_CBM_RATE;
+                seaCalculationText = `${totalVolume.toFixed(4)}m³ × $${SEA_CBM_RATE}`;
+            }
+            
+            if (seaDetailsEl) {
+                 seaDetailsEl.innerHTML = `<strong>Fórmula:</strong> $${SEA_CBM_RATE}/m³ (si ≥ ${SEA_CBM_THRESHOLD}m³),<br>o $${SEA_SUB_CBM_VOLUMETRIC_KG_RATE}/kg-vol (si < ${SEA_CBM_THRESHOLD}m³)<br><strong>Tiempo:</strong> 25-35 días<br><strong>Cálculo:</strong> <span id="sea-calculation">${seaCalculationText}</span>`;
+            }
+
+            document.getElementById('total-weight').textContent = totalWeight.toFixed(2) + ' kg';
+            document.getElementById('total-volume').textContent = totalVolume.toFixed(4) + ' m³';
+            document.getElementById('volumetric-weight').textContent = volumetricWeightCalculated.toFixed(2) + ' kg';
+            document.getElementById('chargeable-weight').textContent = chargeableWeightAir.toFixed(2) + ' kg';
+            
+            document.getElementById('air-cost').textContent = '$' + airCost.toFixed(2);
+            document.getElementById('sea-cost').textContent = '$' + seaCost.toFixed(2);
+            document.getElementById('air-calculation').textContent = airCalculationText;
+
+            const selectedShippingCost = selectedShippingMethod === 'air' ? airCost : seaCost;
+            const finalTotal = productsSubtotal + selectedShippingCost; 
+
+            document.getElementById('products-subtotal').textContent = productsSubtotal.toFixed(2);
+            document.getElementById('shipping-cost').textContent = selectedShippingCost.toFixed(2);
+            if (breakdownTotalWeightEl) breakdownTotalWeightEl.textContent = totalWeight.toFixed(2);
+            document.getElementById('final-total').textContent = finalTotal.toFixed(2);
+
+            const optimizationTip = document.getElementById('optimization-tip');
+            const optimizationText = document.getElementById('optimization-text');
+            if (selectedShippingMethod === 'air' && volumetricWeightCalculated > totalWeight * 1.2) {
+                optimizationTip.style.display = 'block';
+                optimizationText.textContent = `El peso volumétrico (${volumetricWeightCalculated.toFixed(2)} kg) es significativamente mayor que el peso real (${totalWeight.toFixed(2)} kg). Optimizar embalaje podría reducir costos aéreos.`;
+            } else if (selectedShippingMethod === 'sea' && totalVolume < SEA_CBM_THRESHOLD && (volumetricWeightCalculated * SEA_SUB_CBM_VOLUMETRIC_KG_RATE) > (SEA_CBM_THRESHOLD * SEA_CBM_RATE) ) {
+                optimizationTip.style.display = 'block';
+                optimizationText.textContent = `Para envío marítimo, su carga (<${SEA_CBM_THRESHOLD}m³) tiene un costo por peso volumétrico de $${(volumetricWeightCalculated * SEA_SUB_CBM_VOLUMETRIC_KG_RATE).toFixed(2)}. Si su volumen fuera ${SEA_CBM_THRESHOLD}m³, el costo sería $${(SEA_CBM_THRESHOLD * SEA_CBM_RATE).toFixed(2)}. Considere si puede consolidar para alcanzar ${SEA_CBM_THRESHOLD}m³ si es más económico.`;
+            }
+            else {
+                optimizationTip.style.display = 'none';
+            }
+        }
+
+        function updateCart() {
+            const cartItemsEl = document.getElementById('cart-items');
+            const importCalculationsEl = document.getElementById('import-calculations');
+            const costBreakdownEl = document.getElementById('cost-breakdown');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            if (cart.length === 0) {
+                cartItemsEl.innerHTML = `
+                    <div class="empty-cart">
+                        <h3>Tu carrito está vacío</h3>
+                        <p>¡Agrega algunos productos desde el catálogo!</p>
+                        <button class="continue-shopping" onclick="switchTab('catalog', event)">
+                            Ir al Catálogo
+                        </button>
+                    </div>
+                `;
+                importCalculationsEl.style.display = 'none';
+                costBreakdownEl.style.display = 'none';
+                checkoutBtn.disabled = true;
+                updateCosts();
+                return;
+            }
+
+            cartItemsEl.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                        <div class="item-specs">${item.weight.toFixed(3)}kg | ${(item.volume * 1000).toFixed(1)}L</div>
+                        <div class="quantity-controls">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <span class="quantity">${item.quantity}</span>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">
+                        Eliminar
+                    </button>
+                </div>
+            `).join('');
+
+            importCalculationsEl.style.display = 'block';
+            costBreakdownEl.style.display = 'block';
+            checkoutBtn.disabled = false;
+            updateCosts();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartBadge();
+                    updateCart();
+                    if(currentTab === 'catalog') renderProductsBasedOnSearch();
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            const product = products.find(p => p.id === productId);
+            cart = cart.filter(item => item.id !== productId);
+            updateCartBadge();
+            updateCart(); 
+            if(currentTab === 'catalog') renderProductsBasedOnSearch();
+            if (product) showNotification(`${product.name} eliminado del carrito`);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 3000);
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            
+            const finalTotalText = document.getElementById('final-total').textContent;
+            const finalTotal = parseFloat(finalTotalText);
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const shippingMethodText = selectedShippingMethod === 'air' ? 'Aéreo (5-7 días)' : 'Marítimo (25-35 días)';
+            
+            const summary = `¡Gracias por tu compra en IMPORVISIÓN!\n\n` + // Company name in alert
+                          `📦 Resumen:\n` +
+                          `• ${itemCount} productos\n` +
+                          `• Envío: ${shippingMethodText}\n` +
+                          `• Total (Productos + Envío): $${finalTotal.toFixed(2)}\n\n` +
+                          `Tu pedido será procesado pronto.`;
+            
+            alert(summary);
+            
+            cart = [];
+            updateCartBadge();
+            updateCart();
+            if(currentTab === 'catalog') renderProductsBasedOnSearch();
+            showNotification('¡Compra realizada con éxito!');
+        }
+
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('product-name').value.trim(),
+                price: parseFloat(document.getElementById('product-price').value),
+                weight: parseFloat(document.getElementById('product-weight').value),
+                volume: parseFloat(document.getElementById('product-volume').value),
+                category: document.getElementById('product-category').value,
+                image: currentImageData || (editingProductId && products.find(p=>p.id === editingProductId)?.image) || `https://via.placeholder.com/300x200.png?text=${encodeURIComponent(document.getElementById('product-name').value || "Producto")}`
+            };
+
+            if (!formData.name || isNaN(formData.price) || formData.price < 0 || isNaN(formData.weight) || formData.weight < 0 || isNaN(formData.volume) || formData.volume < 0 || !formData.category) {
+                alert("Por favor, completa todos los campos requeridos con valores válidos (números no negativos para precio, peso y volumen).");
+                return;
+            }
+
+            if (editingProductId) {
+                const productIndex = products.findIndex(p => p.id === editingProductId);
+                if (productIndex > -1) {
+                    products[productIndex] = { ...products[productIndex], ...formData };
+                    const cartItemIndex = cart.findIndex(item => item.id === editingProductId);
+                    if (cartItemIndex > -1) {
+                        const originalQuantity = cart[cartItemIndex].quantity;
+                        cart[cartItemIndex] = { ...products[productIndex], quantity: originalQuantity };
+                    }
+                    showNotification('Producto actualizado correctamente');
+                }
+            } else {
+                const newProduct = { id: Date.now(), ...formData };
+                products.push(newProduct);
+                showNotification('Producto agregado correctamente');
+            }
+
+            closeProductModal();
+            if(currentTab === 'catalog') renderProductsBasedOnSearch();
+            if (currentTab === 'cart') updateCart(); 
+        });
+
+        document.getElementById('product-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeProductModal();
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupImageUpload();
+            switchTab(currentTab, null); // Ensures the correct tab is active on load
+            
+            updateCartBadge();
+            selectShipping(selectedShippingMethod); 
+            updateCosts(); 
+
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', renderProductsBasedOnSearch);
+            }
+        });
+    </script>
+</body>
+</html>
